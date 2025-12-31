@@ -50,12 +50,16 @@ const WorkoutCompleteButton = ({
         exercises_completed: exercisesCompleted
       });
 
-      // 2. Registra o checkin diário
+      // 2. Registra o checkin diário (ignora erro se já existir)
       const today = new Date().toISOString().split('T')[0];
-      await addCheckin.mutateAsync({
-        checkin_date: today,
-        workout_id: workout.id
-      });
+      try {
+        await addCheckin.mutateAsync({
+          checkin_date: today,
+          workout_id: workout.id
+        });
+      } catch {
+        // Checkin já existe para hoje - ok, continua
+      }
 
       // 3. Atualiza o streak com a nova lógica
       await updateStreakAfterWorkout();
