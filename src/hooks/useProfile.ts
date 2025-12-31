@@ -103,42 +103,13 @@ export const useAddWorkout = () => {
         .single();
       
       if (error) throw error;
-      
-      // Also add daily checkin
-      const today = new Date().toISOString().split('T')[0];
-      await supabase
-        .from('daily_checkins')
-        .upsert({
-          user_id: user.id,
-          checkin_date: today,
-          workout_id: data.id,
-        }, { onConflict: 'user_id,checkin_date' });
-      
-      // Update profile stats
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('current_streak, longest_streak, total_workouts')
-        .eq('id', user.id)
-        .single();
-      
-      if (profile) {
-        const newStreak = profile.current_streak + 1;
-        await supabase
-          .from('profiles')
-          .update({
-            current_streak: newStreak,
-            longest_streak: Math.max(newStreak, profile.longest_streak),
-            total_workouts: profile.total_workouts + 1,
-          })
-          .eq('id', user.id);
-      }
-      
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workouts'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['checkins'] });
+      queryClient.invalidateQueries({ queryKey: ['lastWorkout'] });
     },
   });
 };
@@ -212,5 +183,57 @@ export const useDailyCheckins = () => {
       return data;
     },
     enabled: !!user,
+  });
+};
+
+export const useAddDailyCheckin = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (checkin: { checkin_date: string; workout_id?: string }) => {
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('daily_checkins')
+        .insert({
+          user_id: user.id,
+          ...checkin
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checkins'] });
+    }
+  });
+};
+
+/**
+ * Obtém a data do último treino do usuário
+ */
+export const useLastWorkoutDate = () => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['lastWorkout', user?.id],
+    queryFn: async (): Promise<string | null> => {
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from('daily_checkins')
+        .select('checkin_date')
+        .eq('user_id', user.id)
+        .order('checkin_date', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data?.checkin_date || null;
+    },
+    enabled: !!user
   });
 };
