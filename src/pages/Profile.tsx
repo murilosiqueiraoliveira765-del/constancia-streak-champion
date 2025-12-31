@@ -1,19 +1,25 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { plans } from '@/data/workouts';
+import NotificationSettings from '@/components/NotificationSettings';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
 
   const currentPlan = plans.find(p => p.id === profile?.current_plan);
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <header className="p-6 safe-top">
         <div className="flex items-center gap-4">
@@ -61,6 +67,14 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Notifications */}
+        <div>
+          <h3 className="font-display text-sm tracking-wider text-muted-foreground mb-4">
+            NOTIFICAÇÕES
+          </h3>
+          <NotificationSettings />
+        </div>
+
         {/* Account Info */}
         <div className="glass-card p-5">
           <h3 className="font-display text-sm tracking-wider text-muted-foreground mb-4">
@@ -78,6 +92,16 @@ const Profile = () => {
             </div>
           </div>
         </div>
+
+        {/* Sign Out */}
+        <Button 
+          variant="outline" 
+          className="w-full" 
+          onClick={handleSignOut}
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          Sair da Conta
+        </Button>
       </main>
     </div>
   );
