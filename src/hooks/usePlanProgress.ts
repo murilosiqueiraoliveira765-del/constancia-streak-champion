@@ -1,10 +1,10 @@
-import { useProfile, useUpdateProfile } from './useProfile';
+import { useProfile, useUpdateProfile, useDailyCheckins } from './useProfile';
 import { plans } from '@/data/workouts';
 import { toast } from 'sonner';
 
 interface PlanProgress {
   currentPlan: typeof plans[0] | null;
-  daysPassed: number;
+  daysPassed: number; // Dias de treino realizados no plano atual
   daysRemaining: number;
   progress: number;
   isCompleted: boolean;
@@ -13,6 +13,7 @@ interface PlanProgress {
 
 export const usePlanProgress = () => {
   const { data: profile } = useProfile();
+  const { data: checkins } = useDailyCheckins();
   const updateProfile = useUpdateProfile();
 
   const getPlanProgress = (): PlanProgress => {
@@ -39,13 +40,17 @@ export const usePlanProgress = () => {
       };
     }
 
-    const startDate = new Date(profile.plan_start_date);
-    const today = new Date();
-    // Normaliza para data local
-    startDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-    
-    const daysPassed = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    // Conta os treinos realizados DESDE o início do plano
+    const planStartDate = new Date(profile.plan_start_date);
+    planStartDate.setHours(0, 0, 0, 0);
+
+    const workoutDays = checkins?.filter(checkin => {
+      const checkinDate = new Date(checkin.checkin_date);
+      checkinDate.setHours(0, 0, 0, 0);
+      return checkinDate >= planStartDate;
+    }).length || 0;
+
+    const daysPassed = workoutDays;
     const daysRemaining = Math.max(plan.duration - daysPassed, 0);
     const progress = Math.min((daysPassed / plan.duration) * 100, 100);
     const isCompleted = daysPassed >= plan.duration;
