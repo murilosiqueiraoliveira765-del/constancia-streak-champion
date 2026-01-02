@@ -291,7 +291,18 @@ export const weeklySchedule = [
   { day: 'Domingo', type: null }, // Rest day
 ];
 
-export const plans = [
+export interface Plan {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  duration: number;
+  goals: string[];
+  loadMultiplier: number; // Multiplicador de carga (1.0 = base, 1.2 = +20%, etc)
+  nextPlanId: string | null; // ID do próximo plano após completar
+}
+
+export const plans: Plan[] = [
   {
     id: '30_days',
     name: '30 Dias',
@@ -299,6 +310,8 @@ export const plans = [
     description: 'Construa o hábito. Treine mesmo nos dias difíceis.',
     duration: 30,
     goals: ['Estabelecer rotina', 'Dominar forma dos exercícios', 'Ganho de força inicial'],
+    loadMultiplier: 1.0,
+    nextPlanId: '90_days',
   },
   {
     id: '90_days',
@@ -307,6 +320,8 @@ export const plans = [
     description: 'Veja mudanças reais. Corpo e mente.',
     duration: 90,
     goals: ['Aumento visível de massa', 'Definição muscular', 'Progressão de exercícios'],
+    loadMultiplier: 1.25, // +25% de carga
+    nextPlanId: '180_days',
   },
   {
     id: '180_days',
@@ -315,6 +330,8 @@ export const plans = [
     description: 'Domine seu corpo. Skills avançadas.',
     duration: 180,
     goals: ['Muscle-up', 'Pistol squat perfeito', 'L-sit avançado', 'Físico atlético'],
+    loadMultiplier: 1.5, // +50% de carga
+    nextPlanId: null, // Plano final
   },
 ];
 
