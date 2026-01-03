@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_checkins: {
         Row: {
           checkin_date: string
@@ -69,6 +96,42 @@ export type Database = {
           max_reps?: number | null
           max_time_seconds?: number | null
           recorded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      food_diary: {
+        Row: {
+          ai_analysis: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          logged_at: string
+          meal_type: string
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          logged_at?: string
+          meal_type: string
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          logged_at?: string
+          meal_type?: string
+          rating?: number | null
           user_id?: string
         }
         Relationships: []
