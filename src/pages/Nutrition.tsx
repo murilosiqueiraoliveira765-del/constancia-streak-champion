@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Sparkles, BookOpen } from 'lucide-react';
+import { Sparkles, BookOpen, CalendarDays } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import NutritionAI from '@/components/NutritionAI';
+import FoodDiary from '@/components/FoodDiary';
 import { nutritionTips } from '@/data/workouts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -11,15 +11,19 @@ const Nutrition = () => {
       {/* Header */}
       <header className="p-6 safe-top">
         <h1 className="font-display text-3xl tracking-wider">NUTRIÇÃO</h1>
-        <p className="text-muted-foreground mt-1">IA + Guia de alimentação</p>
+        <p className="text-muted-foreground mt-1">IA + Diário + Guia</p>
       </header>
 
       <main className="px-6 space-y-6">
         <Tabs defaultValue="ai" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4">
+          <TabsList className="grid w-full grid-cols-3 mb-4">
             <TabsTrigger value="ai" className="gap-2">
               <Sparkles className="w-4 h-4" />
               NutriIA
+            </TabsTrigger>
+            <TabsTrigger value="diary" className="gap-2">
+              <CalendarDays className="w-4 h-4" />
+              Diário
             </TabsTrigger>
             <TabsTrigger value="guide" className="gap-2">
               <BookOpen className="w-4 h-4" />
@@ -29,6 +33,10 @@ const Nutrition = () => {
 
           <TabsContent value="ai" className="mt-0">
             <NutritionAI />
+          </TabsContent>
+
+          <TabsContent value="diary" className="mt-0">
+            <FoodDiary />
           </TabsContent>
 
           <TabsContent value="guide" className="mt-0 space-y-6">
@@ -68,18 +76,18 @@ const Nutrition = () => {
                 <div>
                   <p className="font-medium text-primary mb-2">Antes do Treino</p>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Carboidrato leve 1-2h antes (banana, aveia)</li>
-                    <li>• Café se preferir (melhora performance)</li>
-                    <li>• Evite treinar de estômago cheio</li>
+                    <li>- Carboidrato leve 1-2h antes (banana, aveia)</li>
+                    <li>- Café se preferir (melhora performance)</li>
+                    <li>- Evite treinar de estômago cheio</li>
                   </ul>
                 </div>
                 
                 <div>
                   <p className="font-medium text-primary mb-2">Depois do Treino</p>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Proteína em até 2h (ovos, frango, whey)</li>
-                    <li>• Carboidrato para repor energia</li>
-                    <li>• Hidratação extra</li>
+                    <li>- Proteína em até 2h (ovos, frango, whey)</li>
+                    <li>- Carboidrato para repor energia</li>
+                    <li>- Hidratação extra</li>
                   </ul>
                 </div>
               </div>
