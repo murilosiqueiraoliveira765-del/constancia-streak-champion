@@ -175,6 +175,105 @@ export type Database = {
         }
         Relationships: []
       }
+      reminder_confirmations: {
+        Row: {
+          confirmed_at: string
+          id: string
+          reminder_type: string
+          scheduled_for: string
+          user_id: string
+        }
+        Insert: {
+          confirmed_at?: string
+          id?: string
+          reminder_type: string
+          scheduled_for: string
+          user_id: string
+        }
+        Update: {
+          confirmed_at?: string
+          id?: string
+          reminder_type?: string
+          scheduled_for?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reminder_settings: {
+        Row: {
+          breakfast_time: string | null
+          created_at: string
+          daily_water_goal_ml: number
+          dinner_time: string | null
+          id: string
+          lunch_time: string | null
+          meal_reminder_enabled: boolean
+          snack_time: string | null
+          updated_at: string
+          user_id: string
+          water_reminder_enabled: boolean
+          water_reminder_end_hour: number
+          water_reminder_interval_minutes: number
+          water_reminder_start_hour: number
+        }
+        Insert: {
+          breakfast_time?: string | null
+          created_at?: string
+          daily_water_goal_ml?: number
+          dinner_time?: string | null
+          id?: string
+          lunch_time?: string | null
+          meal_reminder_enabled?: boolean
+          snack_time?: string | null
+          updated_at?: string
+          user_id: string
+          water_reminder_enabled?: boolean
+          water_reminder_end_hour?: number
+          water_reminder_interval_minutes?: number
+          water_reminder_start_hour?: number
+        }
+        Update: {
+          breakfast_time?: string | null
+          created_at?: string
+          daily_water_goal_ml?: number
+          dinner_time?: string | null
+          id?: string
+          lunch_time?: string | null
+          meal_reminder_enabled?: boolean
+          snack_time?: string | null
+          updated_at?: string
+          user_id?: string
+          water_reminder_enabled?: boolean
+          water_reminder_end_hour?: number
+          water_reminder_interval_minutes?: number
+          water_reminder_start_hour?: number
+        }
+        Relationships: []
+      }
+      water_intake: {
+        Row: {
+          amount_ml: number
+          created_at: string
+          id: string
+          logged_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_ml?: number
+          created_at?: string
+          id?: string
+          logged_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_ml?: number
+          created_at?: string
+          id?: string
+          logged_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       workouts: {
         Row: {
           created_at: string
