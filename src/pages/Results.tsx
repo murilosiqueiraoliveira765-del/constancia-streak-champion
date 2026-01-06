@@ -1,5 +1,6 @@
 import BottomNav from '@/components/BottomNav';
-import { useProfile, useWorkouts, useExerciseProgress } from '@/hooks/useProfile';
+import WorkoutCalendar from '@/components/WorkoutCalendar';
+import { useProfile, useWorkouts } from '@/hooks/useProfile';
 import { resultsTimeline } from '@/data/workouts';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Calendar, TrendingUp } from 'lucide-react';
@@ -90,6 +91,9 @@ const Results = () => {
             </ResponsiveContainer>
           </div>
         </section>
+
+        {/* Workout Calendar */}
+        <WorkoutCalendar />
 
         {/* Results Timeline */}
         <section>
