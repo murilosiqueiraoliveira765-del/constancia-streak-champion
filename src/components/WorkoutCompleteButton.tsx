@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Check, Loader2, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useStreak } from '@/hooks/useStreak';
-import { useProfile, useAddWorkout, useAddDailyCheckin, useLastWorkoutDate } from '@/hooks/useProfile';
+import { useProfile, useAddWorkout, useAddDailyCheckin } from '@/hooks/useProfile';
 import { cn } from '@/lib/utils';
 
 interface WorkoutCompleteButtonProps {
@@ -25,15 +25,11 @@ const WorkoutCompleteButton = ({
   const [isCompleting, setIsCompleting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const { data: profile, refetch: refetchProfile } = useProfile();
-  const { data: lastWorkoutDate } = useLastWorkoutDate();
+  const { refetch: refetchProfile } = useProfile();
   const addWorkout = useAddWorkout();
   const addCheckin = useAddDailyCheckin();
 
   const { updateStreakAfterWorkout, isUpdating } = useStreak(
-    profile?.current_streak || 0,
-    lastWorkoutDate || null,
-    profile?.longest_streak || 0,
     () => refetchProfile()
   );
 
