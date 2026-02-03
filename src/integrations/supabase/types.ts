@@ -100,6 +100,45 @@ export type Database = {
         }
         Relationships: []
       }
+      fitness_preferences: {
+        Row: {
+          available_days: number
+          created_at: string
+          equipment: string[] | null
+          fitness_level: string
+          goal: string
+          health_conditions: string | null
+          id: string
+          session_duration: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_days?: number
+          created_at?: string
+          equipment?: string[] | null
+          fitness_level?: string
+          goal: string
+          health_conditions?: string | null
+          id?: string
+          session_duration?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_days?: number
+          created_at?: string
+          equipment?: string[] | null
+          fitness_level?: string
+          goal?: string
+          health_conditions?: string | null
+          id?: string
+          session_duration?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       food_diary: {
         Row: {
           ai_analysis: string | null
@@ -135,6 +174,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      generated_plans: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          plan_data: Json
+          plan_name: string
+          preference_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          plan_data: Json
+          plan_name: string
+          preference_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          plan_data?: Json
+          plan_name?: string
+          preference_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_plans_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "fitness_preferences"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pending_notifications: {
         Row: {

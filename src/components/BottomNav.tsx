@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Dumbbell, Target, Utensils, TrendingUp } from 'lucide-react';
+import { Home, Dumbbell, Sparkles, Utensils, TrendingUp } from 'lucide-react';
 
 const navItems = [
   { path: '/', icon: Home, label: 'Início' },
   { path: '/workouts', icon: Dumbbell, label: 'Treinos' },
-  { path: '/plans', icon: Target, label: 'Planos' },
+  { path: '/my-plan', icon: Sparkles, label: 'Meu Plano' },
   { path: '/nutrition', icon: Utensils, label: 'Nutrição' },
   { path: '/results', icon: TrendingUp, label: 'Progresso' },
 ];
