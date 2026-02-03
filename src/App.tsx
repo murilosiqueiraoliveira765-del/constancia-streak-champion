@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Workouts from "./pages/Workouts";
 import ActiveWorkout from "./pages/ActiveWorkout";
 import Plans from "./pages/Plans";
+import PersonalizedPlan from "./pages/PersonalizedPlan";
 import Nutrition from "./pages/Nutrition";
 import Results from "./pages/Results";
 import Profile from "./pages/Profile";
@@ -59,6 +60,7 @@ const AppRoutes = () => (
     <Route path="/workouts" element={<ProtectedRoute><Workouts /></ProtectedRoute>} />
     <Route path="/workout/:type" element={<ProtectedRoute><ActiveWorkout /></ProtectedRoute>} />
     <Route path="/plans" element={<ProtectedRoute><Plans /></ProtectedRoute>} />
+    <Route path="/my-plan" element={<ProtectedRoute><PersonalizedPlan /></ProtectedRoute>} />
     <Route path="/nutrition" element={<ProtectedRoute><Nutrition /></ProtectedRoute>} />
     <Route path="/results" element={<ProtectedRoute><Results /></ProtectedRoute>} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
