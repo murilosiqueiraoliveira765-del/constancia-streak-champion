@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Flame, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDailyCheckins } from '@/hooks/useProfile';
 import { 
@@ -13,7 +13,8 @@ import {
   subMonths,
   getDay,
   isToday,
-  isFuture
+  isFuture,
+  parseISO
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -24,14 +25,21 @@ interface WorkoutCalendarProps {
   className?: string;
 }
 
+// Parse YYYY-MM-DD string to local date (avoiding timezone issues)
+const parseLocalDate = (dateStr: string): Date => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
 const WorkoutCalendar = ({ className }: WorkoutCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const { data: checkins } = useDailyCheckins();
+  const { data: checkins, isLoading } = useDailyCheckins();
 
-  // Set of dates where user trained
+  // Set of dates where user trained (using YYYY-MM-DD format)
   const trainedDates = useMemo(() => {
     const dates = new Set<string>();
     checkins?.forEach(checkin => {
+      // Ensure consistent date format
       dates.add(checkin.checkin_date);
     });
     return dates;
@@ -43,7 +51,7 @@ const WorkoutCalendar = ({ className }: WorkoutCalendarProps) => {
     
     const sortedDates = [...checkins]
       .map(c => c.checkin_date)
-      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+      .sort((a, b) => b.localeCompare(a)); // Sort descending by string (YYYY-MM-DD)
     
     let streak = 0;
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -54,10 +62,10 @@ const WorkoutCalendar = ({ className }: WorkoutCalendarProps) => {
       return 0;
     }
     
-    let expectedDate = new Date(sortedDates[0]);
+    let expectedDate = parseLocalDate(sortedDates[0]);
     
     for (const dateStr of sortedDates) {
-      const date = new Date(dateStr);
+      const date = parseLocalDate(dateStr);
       if (isSameDay(date, expectedDate)) {
         streak++;
         expectedDate = new Date(expectedDate.getTime() - 86400000);
@@ -146,47 +154,53 @@ const WorkoutCalendar = ({ className }: WorkoutCalendarProps) => {
 
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-1">
-        {daysInMonth.map((day, index) => {
-          if (!day) {
-            return <div key={`empty-${index}`} className="aspect-square" />;
-          }
+        {isLoading ? (
+          <div className="col-span-7 text-center py-8 text-muted-foreground text-sm">
+            Carregando...
+          </div>
+        ) : (
+          daysInMonth.map((day, index) => {
+            if (!day) {
+              return <div key={`empty-${index}`} className="aspect-square" />;
+            }
 
-          const dateStr = format(day, 'yyyy-MM-dd');
-          const isTrained = trainedDates.has(dateStr);
-          const isCurrentMonth = isSameMonth(day, currentMonth);
-          const isDayToday = isToday(day);
-          const isFutureDay = isFuture(day);
+            const dateStr = format(day, 'yyyy-MM-dd');
+            const isTrained = trainedDates.has(dateStr);
+            const isCurrentMonth = isSameMonth(day, currentMonth);
+            const isDayToday = isToday(day);
+            const isFutureDay = isFuture(day);
 
-          return (
-            <div
-              key={dateStr}
-              className={cn(
-                'aspect-square rounded-lg flex items-center justify-center relative transition-all',
-                !isCurrentMonth && 'opacity-30',
-                isDayToday && !isTrained && 'ring-1 ring-primary/50',
-                isTrained && 'bg-primary text-primary-foreground',
-                !isTrained && !isFutureDay && isCurrentMonth && 'bg-muted/30',
-                isFutureDay && 'opacity-30'
-              )}
-            >
-              {isTrained ? (
-                <div className="flex flex-col items-center">
-                  <Flame className="w-3 h-3 mb-0.5" />
-                  <span className="text-[10px] font-medium">
+            return (
+              <div
+                key={dateStr}
+                className={cn(
+                  'aspect-square rounded-lg flex items-center justify-center relative transition-all',
+                  !isCurrentMonth && 'opacity-30',
+                  isDayToday && !isTrained && 'ring-1 ring-primary/50',
+                  isTrained && 'bg-primary text-primary-foreground',
+                  !isTrained && !isFutureDay && isCurrentMonth && 'bg-muted/30',
+                  isFutureDay && 'opacity-30'
+                )}
+              >
+                {isTrained ? (
+                  <div className="flex flex-col items-center">
+                    <Flame className="w-3 h-3 mb-0.5" />
+                    <span className="text-[10px] font-medium">
+                      {format(day, 'd')}
+                    </span>
+                  </div>
+                ) : (
+                  <span className={cn(
+                    'text-xs',
+                    isDayToday && 'font-bold text-primary'
+                  )}>
                     {format(day, 'd')}
                   </span>
-                </div>
-              ) : (
-                <span className={cn(
-                  'text-xs',
-                  isDayToday && 'font-bold text-primary'
-                )}>
-                  {format(day, 'd')}
-                </span>
-              )}
-            </div>
-          );
-        })}
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
 
       {/* Streak indicator */}
